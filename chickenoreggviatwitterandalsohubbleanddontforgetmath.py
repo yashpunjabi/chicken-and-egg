@@ -53,5 +53,14 @@ def getAveragePixelValue(imgUrl):
     except URLError, e:
         print 'Average was f\'d :( Got an error code:', e
 
+def findTheMainAverageOfAllTheImages():
+    imgUrls = get_thousand_nasa_images(NASA_FIRST_DAY)
+
+    avgList = []
+    for imgUrl in imgUrls:
+        if imgUrl != None
+            avgList.append(getAveragePixelValue(imgUrl))
+
+    return numpy.mean(avgList)
 
 print getAveragePixelValue("static.flickr.com/37/88847543_d1eb68c5b9_m.jpg")
