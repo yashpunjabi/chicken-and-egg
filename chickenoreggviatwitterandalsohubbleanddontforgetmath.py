@@ -1,5 +1,7 @@
 # Here we have the application that will determine whether the chicken or the egg came first
 # using twitter and the Hubble telescope. And also math.
+
+from __future__ import division
 from urllib2 import Request, urlopen, URLError
 from datetime import datetime, timedelta
 import json
@@ -38,7 +40,7 @@ def get_thousand_nasa_images(fromDay):
     d = datetime.strptime(fromDay,'%Y-%m-%d')
     image_urls = []
 
-    for i in range(1000):
+    for i in range(3):
         currentImage = get_nasa_image(d.strftime('%Y-%m-%d'))
         print d.strftime('%Y-%m-%d') + ":",  currentImage
         image_urls.append(currentImage)
@@ -78,30 +80,41 @@ def findTheMainAverageOfAllTheImages():
     return numpy.mean(avgList)
 
 def callServerForLessThan128(n):
-    #dummy
-    eggfirst = True
+    request = Request("http://cloaca.azurewebsites.net/determineChickenOrEgg/" + str(n))
+    try:
+        response = urlopen(request)
+        s = response.read()
+        return s == "true"
+    except URLError, e:
+        print ' eggz. Got an error code:', e
+        return False
 
 #This is a basic listener that just prints received tweets to stdout.
 class StdOutListener(StreamListener):
     def __init__(self):
         self.eggcount = 0
         self.chickencount = 0
-        self.times = []
-        self.chickencounts = []
+        self.first = True
+        self.time1 = 0
 
     def on_data(self, data):
         try:
             parsedData = simplejson.loads(data)
             text =  parsedData['text'].encode('utf-8')
             time =  int(parsedData['timestamp_ms'].encode('utf-8'))
-            self.times.append(time)
-            self.chickencounts.append(chickencount)
             print text
-
-            plt.axis([0, len(times), 0, len(chickencounts)])
+            if self.first:
+                self.time1 = time
+                self.first = False
+            plt.axis([self.time1-10000, time+10000,-5,self.chickencount+10])
             plt.ion()
+            plt.scatter(time, self.chickencount)
+            plt.scatter(time, self.eggcount,color="red")
+            if (self.eggcount+self.chickencount) > 0:
+                plt.title(str(self.chickencount/(self.eggcount+self.chickencount)*100) + "% chance CHICKEN came first\n"
+                 + str(self.eggcount/(self.eggcount+self.chickencount)*100) + "% chance EGG came first" )
+            plt.pause(0.001)
 
-            plt.plot(times, chickencounts)
 
 
             #Adding to the chicken
@@ -121,8 +134,8 @@ class StdOutListener(StreamListener):
 
 
 if __name__ == '__main__':
-    # avg = findTheMainAverageOfAllTheImages()
-    # callServerForLessThan128(avg)
+    avg = findTheMainAverageOfAllTheImages()
+    eggfirst = callServerForLessThan128(int(avg))
 
     f = open('config.txt','r')
     lines = f.readlines()
