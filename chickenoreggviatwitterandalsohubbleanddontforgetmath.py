@@ -4,6 +4,9 @@ from urllib2 import Request, urlopen, URLError
 from datetime import datetime, timedelta
 import json
 import numpy
+
+import matplotlib.pyplot as plt
+
 #Import the necessary methods from tweepy library
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
@@ -12,6 +15,11 @@ import simplejson
 #Variables that contains the user credentials to access Twitter API
 
 NASA_FIRST_DAY = '1995-9-22'
+eggfirst = True
+
+
+import re
+import urllib2
 
 
 def get_nasa_image(dateString):
@@ -71,24 +79,32 @@ def findTheMainAverageOfAllTheImages():
 
 def callServerForLessThan128(n):
     #dummy
-    return True
-
+    eggfirst = True
 
 #This is a basic listener that just prints received tweets to stdout.
 class StdOutListener(StreamListener):
     def __init__(self):
         self.eggcount = 0
         self.chickencount = 0
+        self.times = []
+        self.chickencounts = []
 
     def on_data(self, data):
         try:
             parsedData = simplejson.loads(data)
             text =  parsedData['text'].encode('utf-8')
-            time =  parsedData['timestamp_ms'].encode('utf-8')
+            time =  int(parsedData['timestamp_ms'].encode('utf-8'))
+            self.times.append(time)
+            self.chickencounts.append(chickencount)
             print text
 
+            plt.axis([0, len(times), 0, len(chickencounts)])
+            plt.ion()
+
+            plt.plot(times, chickencounts)
+
+
             #Adding to the chicken
-            eggfirst = True
             if eggfirst:
                 self.eggcount+= 1 if ('egg' in text.lower()) else 0
                 self.chickencount+= 1 if ('chicken' in text.lower()) else 0
@@ -105,6 +121,9 @@ class StdOutListener(StreamListener):
 
 
 if __name__ == '__main__':
+    # avg = findTheMainAverageOfAllTheImages()
+    # callServerForLessThan128(avg)
+
     f = open('config.txt','r')
     lines = f.readlines()
     access_token = lines[0].strip()
