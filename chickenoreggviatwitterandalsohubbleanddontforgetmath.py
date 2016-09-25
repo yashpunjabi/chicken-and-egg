@@ -86,8 +86,8 @@ class StdOutListener(StreamListener):
     def __init__(self):
         self.eggcount = 0
         self.chickencount = 0
-        self.times = []
-        self.chickencounts = []
+        # self.times = []
+        # self.chickencounts = []
 
     def on_data(self, data):
         try:
@@ -95,13 +95,13 @@ class StdOutListener(StreamListener):
             text =  parsedData['text'].encode('utf-8')
             time =  int(parsedData['timestamp_ms'].encode('utf-8'))
             self.times.append(time)
-            self.chickencounts.append(chickencount)
+            self.chickencounts.append(self.chickencount)
             print text
 
-            plt.axis([0, len(times), 0, len(chickencounts)])
-            plt.ion()
-
-            plt.plot(times, chickencounts)
+            # plt.axis([0, time + 10000, 0, len(self.chickencounts) + 20])
+            # plt.ion()
+            #
+            # plt.plot(self.times, self.chickencounts)
 
 
             #Adding to the chicken
@@ -113,7 +113,8 @@ class StdOutListener(StreamListener):
                 self.eggcount+= 1 if ('egg' in text.lower()) else 0
 
             return True
-        except:
+        except Exception as e:
+            print e
             return False
 
     def on_error(self, status):
