@@ -40,7 +40,7 @@ def get_thousand_nasa_images(fromDay):
     d = datetime.strptime(fromDay,'%Y-%m-%d')
     image_urls = []
 
-    for i in range(3):
+    for i in range(1):
         currentImage = get_nasa_image(d.strftime('%Y-%m-%d'))
         print d.strftime('%Y-%m-%d') + ":",  currentImage
         image_urls.append(currentImage)
@@ -96,6 +96,8 @@ class StdOutListener(StreamListener):
         self.chickencount = 0
         self.first = True
         self.time1 = 0
+        fig = plt.figure()
+        fig.set_facecolor('white')
 
     def on_data(self, data):
         try:
@@ -106,13 +108,17 @@ class StdOutListener(StreamListener):
             if self.first:
                 self.time1 = time
                 self.first = False
+                plt.xlabel("time in miliseconds")
+                plt.ylabel("Number of tweets")
             plt.axis([self.time1-10000, time+10000,-5,self.chickencount+10])
             plt.ion()
             plt.scatter(time, self.chickencount)
             plt.scatter(time, self.eggcount,color="red")
+
+
             if (self.eggcount+self.chickencount) > 0:
-                plt.title(str(self.chickencount/(self.eggcount+self.chickencount)*100) + "% chance CHICKEN came first\n"
-                 + str(self.eggcount/(self.eggcount+self.chickencount)*100) + "% chance EGG came first" )
+                plt.title(str(self.chickencount/(self.eggcount+self.chickencount)*100) + "% chance CHICKEN came first",color="blue",loc="left")
+                plt.title(str(self.eggcount/(self.eggcount+self.chickencount)*100) + "% chance EGG came first",color="red",loc="right")
             plt.pause(0.001)
 
 
