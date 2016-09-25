@@ -63,4 +63,6 @@ def findTheMainAverageOfAllTheImages():
 
     return numpy.mean(avgList)
 
-print getAveragePixelValue("static.flickr.com/37/88847543_d1eb68c5b9_m.jpg")
+def callServerForLessThan128(n):
+    #dummy
+    return True
