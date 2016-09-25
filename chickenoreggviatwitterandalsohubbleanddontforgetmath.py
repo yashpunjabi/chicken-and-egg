@@ -3,6 +3,7 @@
 from urllib2 import Request, urlopen, URLError
 from datetime import datetime, timedelta
 import json
+import numpy
 
 NASA_FIRST_DAY = '1995-9-22'
 
@@ -30,3 +31,27 @@ def get_thousand_nasa_images(fromDay):
         d = d+timedelta(days=1)
 
     return image_urls
+
+def getAveragePixelValue(imgUrl):
+    request = Request("http://mkweb.bcgsc.ca/color-summarizer/?url=" + imgUrl + "&precision=low&json=1")
+    try:
+        response = urlopen(request)
+        jsonString = json.loads(response.read())
+
+        rgbStats = jsonString['stats']['rgb']
+
+        rVal = rgbStats['r']['avg'][0]
+        gVal = rgbStats['g']['avg'][0]
+        bVal = rgbStats['b']['avg'][0]
+
+        avg = numpy.mean([rVal, gVal, bVal])
+
+        print "WE HAVE NOW COMPUTED THE AVERAGE TO BE: ", avg
+        return avg
+
+
+    except URLError, e:
+        print 'Average was f\'d :( Got an error code:', e
+
+
+print getAveragePixelValue("static.flickr.com/37/88847543_d1eb68c5b9_m.jpg")
