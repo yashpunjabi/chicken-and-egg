@@ -4,6 +4,12 @@ from urllib2 import Request, urlopen, URLError
 from datetime import datetime, timedelta
 import json
 import numpy
+#Import the necessary methods from tweepy library
+from tweepy.streaming import StreamListener
+from tweepy import OAuthHandler
+from tweepy import Stream
+import simplejson
+#Variables that contains the user credentials to access Twitter API
 
 NASA_FIRST_DAY = '1995-9-22'
 
@@ -58,7 +64,7 @@ def findTheMainAverageOfAllTheImages():
 
     avgList = []
     for imgUrl in imgUrls:
-        if imgUrl != None
+        if imgUrl != None:
             avgList.append(getAveragePixelValue(imgUrl))
 
     return numpy.mean(avgList)
@@ -66,3 +72,52 @@ def findTheMainAverageOfAllTheImages():
 def callServerForLessThan128(n):
     #dummy
     return True
+
+
+#This is a basic listener that just prints received tweets to stdout.
+class StdOutListener(StreamListener):
+    def __init__(self):
+        self.eggcount = 0
+        self.chickencount = 0
+
+    def on_data(self, data):
+        try:
+            parsedData = simplejson.loads(data)
+            text =  parsedData['text'].encode('utf-8')
+            time =  parsedData['timestamp_ms'].encode('utf-8')
+            print text
+
+            #Adding to the chicken
+            eggfirst = True
+            if eggfirst:
+                self.eggcount+= 1 if ('egg' in text.lower()) else 0
+                self.chickencount+= 1 if ('chicken' in text.lower()) else 0
+            else:
+                self.chickencount+= 1 if ('chicken' in text.lower()) else 0
+                self.eggcount+= 1 if ('egg' in text.lower()) else 0
+
+            return True
+        except:
+            return False
+
+    def on_error(self, status):
+        print status
+
+
+if __name__ == '__main__':
+    f = open('config.txt','r')
+    lines = f.readlines()
+    access_token = lines[0].strip()
+    access_token_secret = lines[1].strip()
+    consumer_key = lines[2].strip()
+    consumer_secret = lines[3].strip()
+
+
+    #This handles Twitter authetification and the connection to Twitter Streaming API
+    l = StdOutListener()
+    auth = OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    stream = Stream(auth, l)
+
+    #This line filter Twitter Streams to capture data by the keywords: 'python', 'javascript', 'ruby'
+    stream.filter(track=['chicken', 'egg'])
