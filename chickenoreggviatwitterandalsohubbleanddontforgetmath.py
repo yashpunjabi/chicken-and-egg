@@ -30,5 +30,3 @@ def get_thousand_nasa_images(fromDay):
         d = d+timedelta(days=1)
 
     return image_urls
-
-get_thousand_nasa_images(NASA_FIRST_DAY)
