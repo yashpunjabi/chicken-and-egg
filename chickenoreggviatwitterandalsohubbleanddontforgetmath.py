@@ -117,8 +117,8 @@ class StdOutListener(StreamListener):
 
 
             if (self.eggcount+self.chickencount) > 0:
-                plt.title(str(self.chickencount/(self.eggcount+self.chickencount)*100) + "% chance CHICKEN came first",color="blue",loc="left")
-                plt.title(str(self.eggcount/(self.eggcount+self.chickencount)*100) + "% chance EGG came first",color="red",loc="right")
+                plt.title(str(100-(self.chickencount/(self.eggcount+self.chickencount)*100)) + "% chance CHICKEN came first",color="blue",loc="left")
+                plt.title(str(100-(self.eggcount/(self.eggcount+self.chickencount)*100)) + "% chance EGG came first",color="red",loc="right")
             plt.pause(0.001)
 
 
