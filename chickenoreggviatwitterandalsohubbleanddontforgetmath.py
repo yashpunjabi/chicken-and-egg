@@ -94,22 +94,16 @@ class StdOutListener(StreamListener):
     def __init__(self):
         self.eggcount = 0
         self.chickencount = 0
-<<<<<<< HEAD
         self.first = True
         self.time1 = 0
         fig = plt.figure()
         fig.set_facecolor('white')
-=======
-        # self.times = []
-        # self.chickencounts = []
->>>>>>> b10d16dc0649c4ba1cf5fe50934c834e79d56f3a
 
     def on_data(self, data):
         try:
             parsedData = simplejson.loads(data)
             text =  parsedData['text'].encode('utf-8')
             time =  int(parsedData['timestamp_ms'].encode('utf-8'))
-<<<<<<< HEAD
             print text
             if self.first:
                 self.time1 = time
@@ -127,16 +121,6 @@ class StdOutListener(StreamListener):
                 plt.title(str(100-(self.eggcount/(self.eggcount+self.chickencount)*100)) + "% chance EGG came first",color="red",loc="right")
             plt.pause(0.001)
 
-=======
-            self.times.append(time)
-            self.chickencounts.append(self.chickencount)
-            print text
-
-            # plt.axis([0, time + 10000, 0, len(self.chickencounts) + 20])
-            # plt.ion()
-            #
-            # plt.plot(self.times, self.chickencounts)
->>>>>>> b10d16dc0649c4ba1cf5fe50934c834e79d56f3a
 
 
             #Adding to the chicken
